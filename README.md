@@ -1,63 +1,29 @@
-# HSE DE ETL. Задание 1
+# HSE DE ETL. Задание 2
 
-Данные по животным сохранил в таблицу
+Исходные данные сохранил в таблицу
 ```sql
-create table if not exists pets_data (
-    id serial primary key,
-    name varchar(255) not null,
-    favFoods varchar(255)[] not null,
-    birthYear smallint not null,
-    photo varchar(255) not null
-);
+    create table if not exists temperature_readings (
+        id serial primary key,
+        noted_date date not null,
+        temp numeric not null,
+        out_in varchar(10) not null,
+        device_id varchar(255)
+    );
 ```
-Запрос результата
-![](./pets_data_select.png)
-Выпонение дага
-![](./pets_data_dag_complete.png)
-
-
-Данные по еде сохранил в 2 таблицы
+Отфильтрованные и агрегированные в в другую таблицу 
 ```sql
-create table if not exists daily_values (
-    id serial primary key,
-    total_fat numeric not null,
-    total_fat_units varchar(10) not null default 'g',
-    saturated_fat numeric not null,
-    saturated_fat_units varchar(10) not null default 'g',
-    cholesterol numeric not null,
-    cholesterol_units varchar(10) not null default 'mg',
-    sodium numeric not null,
-    sodium_units varchar(10) not null default 'mg',
-    carb numeric not null,
-    carb_units varchar(10) not null default 'g',
-    fiber numeric not null,
-    fiber_units varchar(10) not null default 'g',
-    protein numeric not null,
-    protein_units varchar(10) not null default 'g'
-);
-
-create table if not exists food (
-    id serial primary key,
-    name varchar(255) not null,
-    mfr varchar(255),
-    serving numeric,
-    serving_units varchar(10) default 'g',
-    calories_total numeric,
-    calories_fat numeric,
-    total_fat numeric,
-    saturated_fat numeric,
-    cholesterol numeric,
-    sodium numeric,
-    carb numeric,
-    fiber numeric,
-    protein numeric,
-    vitamin_a numeric,
-    vitamin_c numeric,
-    mineral_ca numeric,
-    mineral_fe numeric
-);
+    create table if not exists temperature_metrics (
+        id serial primary key,
+        metric_type varchar(50) not null,
+        noted_date date not null,
+        avg_temp numeric not null,
+        min_temp numeric,
+        max_temp numeric,
+        created_at timestamp default current_timestamp
+    );
 ```
-Запрос результата
-![](./nutrition_data_select.png)
-Выпонение дага
-![](./nutrition_data_dag_complete.png)
+Выпонение дага и вывод результатов
+![](./temperature_data_select.png)
+
+Сам даг
+[](./airflow/dags/temperature_etl_dag.py)
