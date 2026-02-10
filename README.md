@@ -1,6 +1,6 @@
-# HSE DE ETL. Задание 2
+# HSE DE ETL. Задание 3
 
-Исходные данные сохранил в таблицу
+Исходные данные также как в задании 3 сохранил в таблицу
 ```sql
     create table if not exists temperature_readings (
         id serial primary key,
@@ -22,8 +22,13 @@
         created_at timestamp default current_timestamp
     );
 ```
-Выпонение дага и вывод результатов
-![](./temperature_data_select.png)
+
+Таск load_historical_temperature_data удаляет все данные в таблице и записывает новые
+
+Таск load_incremental_temperature_data, наоборот, удаляет все данные в таблице младше текущего дня - 1, затем записывает новые данные младше той же даты
+
+Выпонение дага
+![](./task3_dag_completion.png)
 
 Сам даг
 [](./airflow/dags/temperature_etl_dag.py)
