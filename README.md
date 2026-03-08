@@ -26,4 +26,4 @@
 ![](./temperature_data_select.png)
 
 Сам даг
-[](./airflow/dags/temperature_etl_dag.py)
+[даг](./airflow/dags/temperature_etl_dag.py)
