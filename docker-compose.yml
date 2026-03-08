@@ -28,6 +28,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
+      _PIP_ADDITIONAL_REQUIREMENTS: "kagglehub pymongo"
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
     volumes:
       - ./airflow/dags:/opt/airflow/dags
@@ -35,6 +36,7 @@ services:
       - ./airflow/datasets:/opt/airflow/datasets
     command: >
       bash -c "
+      pip install kagglehub pymongo &&
       airflow db init &&
       airflow users create -r Admin -u admin -f Admin -l User -p admin --email admin@example.com || echo 'Admin user already exists'
       "
@@ -48,6 +50,7 @@ services:
       airflow-init:
         condition: service_completed_successfully  # Ждёт успешного завершения инициализации
     environment:
+      _PIP_ADDITIONAL_REQUIREMENTS: "kagglehub pymongo"
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
       AIRFLOW__WEBSERVER__EXPOSE_CONFIG: 'true'
@@ -73,6 +76,7 @@ services:
       airflow-webserver:
         condition: service_healthy
     environment:
+      _PIP_ADDITIONAL_REQUIREMENTS: "kagglehub pymongo"
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
     volumes:
       - ./airflow/dags:/opt/airflow/dags
@@ -109,9 +113,19 @@ services:
       jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token='' --NotebookApp.password=''
       "
     restart: unless-stopped
+
+  mongo:
+    image: mongo:7
+    container_name: de-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
  
 volumes:
   postgres_data:
   nifi_data:
   nifi_logs:
   nifi_config:
+  mongo_data:

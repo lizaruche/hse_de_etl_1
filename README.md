@@ -1,34 +1,25 @@
-# HSE DE ETL. Задание 3
+# HSE DE ETL. Итоговое задание
 
-Исходные данные также как в задании 3 сохранил в таблицу
-```sql
-    create table if not exists temperature_readings (
-        id serial primary key,
-        noted_date date not null,
-        temp numeric not null,
-        out_in varchar(10) not null,
-        device_id varchar(255)
-    );
-```
-Отфильтрованные и агрегированные в в другую таблицу 
-```sql
-    create table if not exists temperature_metrics (
-        id serial primary key,
-        metric_type varchar(50) not null,
-        noted_date date not null,
-        avg_temp numeric not null,
-        min_temp numeric,
-        max_temp numeric,
-        created_at timestamp default current_timestamp
-    );
-```
+1. Заполнение базы mongodb
 
-Таск load_historical_temperature_data удаляет все данные в таблице и записывает новые
+Заполнение проиходит в таске load_mongo_data, заполняются 5 таблиц:
+ - UserSessions: данные пользовательских сессий
+ - EventLogs: данные по событиям клинтов
+ - SupportTickets: данные по обращениям в поддержку
+ - UserRecomendations: данные по рекомендациям пользователей
+ - ModerationQueue: данные по модерации обращений
 
-Таск load_incremental_temperature_data, наоборот, удаляет все данные в таблице младше текущего дня - 1, затем записывает новые данные младше той же даты
+2. Репликация данных в postgres
 
-Выпонение дага
-![](./task3_dag_completion.png)
+Репликация просиходит один к одному в таске replicate_to_postgres
 
-Сам даг
-[](./airflow/dags/temperature_etl_dag.py)
+3. Заполнение витрин
+
+Заполнение происходит в тасках build_user_analitics и build_support_analitics
+
+На выходе получаются две таблицы user_analitics и support_analitics
+
+4. Вывод данных витрин в логи в таске show_datamarts
+
+Результат работы дага 
+![](./itog_etl.png)
