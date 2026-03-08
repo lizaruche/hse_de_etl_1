@@ -1,6 +1,6 @@
 # HSE DE ETL. Итоговое задание
 
-Итоговый даг - ![](./airflow/dags/mongo_etl_dag.py)
+Итоговый даг - [](./airflow/dags/mongo_etl_dag.py)
 
 ### 1. Заполнение базы mongodb
 
